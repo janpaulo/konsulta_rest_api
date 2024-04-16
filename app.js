@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const mysql = require('mysql');
+const bcrypt = require('bcrypt');
    
 /*------------------------------------------
 --------------------------------------------
@@ -16,10 +17,10 @@ Database Connection
 --------------------------------------------
 --------------------------------------------*/
 const conn = mysql.createConnection({
-  host: 'localhost',
+  host: 'localhost' ,
   user: 'root', /* MySQL User */
   password: '', /* MySQL Password */
-  database: 'cimyapp' /* MySQL Database */
+  database: 'claims_api' /* MySQL Database */
 });
    
 /*------------------------------------------
@@ -38,7 +39,7 @@ conn.connect((err) =>{
  * @return response()
  */
 app.get('/api/items',(req, res) => {
-  let sqlQuery = "SELECT * FROM authors";
+  let sqlQuery = "SELECT * FROM user_accounts";
   
   let query = conn.query(sqlQuery, (err, results) => {
     if(err) throw err;
@@ -52,7 +53,7 @@ app.get('/api/items',(req, res) => {
  * @return response()
  */
 app.get('/api/items/:id',(req, res) => {
-  let sqlQuery = "SELECT * FROM authors WHERE id=" + req.params.id;
+  let sqlQuery = "SELECT * FROM user_accounts WHERE id=" + req.params.id;
     
   let query = conn.query(sqlQuery, (err, results) => {
     if(err) throw err;
@@ -68,7 +69,7 @@ app.get('/api/items/:id',(req, res) => {
 app.post('/api/items',(req, res) => {
   let data = {title: req.body.title, body: req.body.body};
   
-  let sqlQuery = "INSERT INTO authors SET ?";
+  let sqlQuery = "INSERT INTO user_accounts SET ?";
   
   let query = conn.query(sqlQuery, data,(err, results) => {
     if(err) throw err;
@@ -82,7 +83,7 @@ app.post('/api/items',(req, res) => {
  * @return response()
  */
 app.put('/api/items/:id',(req, res) => {
-  let sqlQuery = "UPDATE authors SET title='"+req.body.title+"', body='"+req.body.body+"' WHERE id="+req.params.id;
+  let sqlQuery = "UPDATE user_accounts SET title='"+req.body.title+"', body='"+req.body.body+"' WHERE id="+req.params.id;
   
   let query = conn.query(sqlQuery, (err, results) => {
     if(err) throw err;
@@ -96,14 +97,41 @@ app.put('/api/items/:id',(req, res) => {
  * @return response()
  */
 app.delete('/api/items/:id',(req, res) => {
-  let sqlQuery = "DELETE FROM authors WHERE id="+req.params.id+"";
+  let sqlQuery = "DELETE FROM user_accounts WHERE id="+req.params.id+"";
     
   let query = conn.query(sqlQuery, (err, results) => {
     if(err) throw err;
       res.send(apiResponse(results));
   });
 });
-  
+
+// Route for user login
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+
+  conn.query('SELECT * FROM user_accounts WHERE username = ? AND password = ?', [username, password], (error, results) => {
+    if (error) {
+      console.error('Error retrieving user:', error);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    if (results.length === 0) {
+      return res.status(401).send('Username or password incorrect');
+    }
+
+     // Extract user data from the query result
+     const user = results[0];
+
+     // Remove the password from the user object before sending it in the response
+     delete user.password;
+ 
+     // Return the user data in the response
+     res.json(user);
+
+  });
+});
+
+
 /**
  * API Response
  *
