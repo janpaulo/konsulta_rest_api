@@ -4,6 +4,7 @@ const db = require("../dbConnection");
 const app = express();
 var cors = require('cors')
 
+router.use(cors());
 function apiResponse(results) {
   return JSON.stringify({ response: results, status: 200 });
 }

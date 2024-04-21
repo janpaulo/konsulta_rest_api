@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
+var cors = require('cors')
 
+app.use(cors());
 // Import route files
 const userRoutes = require('./routes/users');
 const claimRoutes = require('./routes/claims');
