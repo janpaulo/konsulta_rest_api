@@ -10,6 +10,7 @@ const esoasRoutes = require('./routes/esoa');
 const idcRoutes = require('./routes/autocompleIcodes');
 const icdRoutes = require('./routes/icdCodes');
 const rvsRoutes = require('./routes/rvsCodes');
+const phicSoap = require('./routes/soapPhic');
 
 // Use the route files
 app.use('/users', userRoutes);
@@ -18,6 +19,7 @@ app.use('/esoas', esoasRoutes);
 app.use('/codes', idcRoutes);
 app.use('/icdsCodes', icdRoutes);
 app.use('/rvsCodes', rvsRoutes);
+app.use('/soapPhic', phicSoap);
 
 // Start the server
 const port = process.env.PORT || 3000;
