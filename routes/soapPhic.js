@@ -7,9 +7,11 @@ const { parseString } = require("xml2js");
 
 const cors = require('cors');
 
-router.use(cors({
-  origin: 'http://your-client-app.com' // Replace with your client's origin
-}));
+
+router.use(cors());
+// router.use(cors({
+//   origin: 'https://eclaimstest2.philhealth.gov.ph:8077/soap?service=PhilhealthService' // Replace with your client's origin
+// }));
 
 // function apiResponse(results) {
 //   return JSON.stringify({ data: results, status: 200 });
