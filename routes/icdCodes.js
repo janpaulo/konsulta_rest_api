@@ -35,9 +35,8 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
     // const { series_no, member_pin, date_admited, status, hci_no, date_created , xml_data } = req.body;
-    let data = {series_no: req.body.series_no, member_pin: req.body.member_pin,
-        date_admited: req.body.date_admited, status: req.body.status, 
-        hci_no: req.body.hci_no, date_created: req.body.date_created, xml_data: req.body.xml_data};
+    let data ={icd_10_code:req.body.icd_10_code, description:req.body.description,group: req.body.group,
+      case_rate:req.body.case_rate,professional_fee:req.body.professional_fee,hci_fee:req.body.hci_fee};
   
     let sqlQuery = "INSERT INTO icd_codes SET ?";
 
@@ -49,12 +48,12 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
 
-    let sqlQuery = "UPDATE icd_codes SET series_no='"+req.body.series_no+"', member_pin='"+req.body.member_pin+"', date_admited='"+req.body.date_admited+"', status='"+req.body.status+"', hci_no='"+req.body.hci_no+"', date_created='"+req.body.date_created+"',  WHERE id="+req.params.id;
-  
-    let query = db.query(sqlQuery, (err, results) => {
-      if(err) throw err;
+  let sqlQuery = "UPDATE icd_codes SET icd_10_code='" + req.body.icd_10_code + "', description='" + req.body.description + "', `group`='" + req.body.group + "', case_rate='" + req.body.case_rate + "', professional_fee='" + req.body.professional_fee + "', hci_fee='" + req.body.hci_fee + "' WHERE id=" + req.params.id;
+
+  let query = db.query(sqlQuery, (err, results) => {
+      if (err) throw err;
       res.send(apiResponse(results));
-    });
+  });
 });
 
 router.delete("/:id", (req, res) => {
