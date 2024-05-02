@@ -36,10 +36,9 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
     // const { series_no, member_pin, date_admited, status, hci_no, date_created , xml_data } = req.body;
-    let data = {series_no: req.body.series_no, member_pin: req.body.member_pin,
-        date_admited: req.body.date_admited, status: req.body.status, 
-        hci_no: req.body.hci_no, date_created: req.body.date_created, xml_data: req.body.xml_data};
-  
+    let data ={rvs_code:req.body.rvs_code, description:req.body.description,
+      case_rate:req.body.case_rate,professional_fee:req.body.professional_fee,hci_fee:req.body.hci_fee};
+
     let sqlQuery = "INSERT INTO rvs_codes SET ?";
 
     let query = db.query(sqlQuery, data,(err, results) => {
@@ -50,7 +49,7 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
 
-    let sqlQuery = "UPDATE rvs_codes SET series_no='"+req.body.series_no+"', member_pin='"+req.body.member_pin+"', date_admited='"+req.body.date_admited+"', status='"+req.body.status+"', hci_no='"+req.body.hci_no+"', date_created='"+req.body.date_created+"',  WHERE id="+req.params.id;
+  let sqlQuery = "UPDATE rvs_codes SET rvs_code='" + req.body.rvs_code + "', description='" + req.body.description + "', case_rate='" + req.body.case_rate + "', professional_fee='" + req.body.professional_fee + "', hci_fee='" + req.body.hci_fee + "' WHERE id=" + req.params.id;
   
     let query = db.query(sqlQuery, (err, results) => {
       if(err) throw err;
@@ -86,59 +85,5 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-// Route handler for '/test'
-router.get('/test', (req, res) => {
-  // Construct SQL query
-  const sqlQuery = 'SELECT * FROM rvs_codes';
-  // Assuming you're passing the value of 'test' as a query parameter
-  // const testValue = req.query.test;
-
-  // Execute SQL query
-  db.query(sqlQuery, [testValue], (err, results) => {
-    if (err) {
-      console.error('Error executing SQL query:', err);
-      res.status(500).send('Error retrieving data from database');
-      return;
-    }
-    // Send the results back as a JSON response
-    res.json(results);
-  });
-});
-
-
-router.get('/autocomplete', (req, res) => {
-  const { term } = req.query;
-
-  if (!term) {
-    return res.status(400).json({ message: 'Missing search term' });
-  }
-
-  // const query = `
-  //   SELECT *
-  //   FROM rvs_codes
-  //   WHERE rvs_code LIKE ? OR description LIKE ?
-  //   LIMIT 10;`;
-
-  // const searchTerm = `%${term}%`;
-
-  console.log(term)
-  // db.query(query, [searchTerm, searchTerm], (error, results, fields) => {
-  //   if (error) {
-  //     console.error('Error executing query:', error);
-  //     return res.status(500).json({ message: 'Internal server error' });
-  //   }
-
-  //   const suggestions = results.map(result => ({
-  //     rvs_code: result.rvs_code,
-  //     description: result.description,
-  //     case_rate: result.case_rate,
-  //     professional_fee: result.professional_fee,
-  //     hci_fee: result.hci_fee,
-  //     id: result.id,
-  //   }));
-
-  //   res.json(suggestions);
-  // });
-});
 
 module.exports = router;
